@@ -3,6 +3,7 @@ import MaxWithWrapper from "./MaxWithWrapper";
 import { Icons } from "./Icons";
 import NavItems from "./NavItems";
 import { buttonVariants } from "./ui/button";
+import Cart from "./Cart";
 
 const Navbar = () => {
   //mock data
