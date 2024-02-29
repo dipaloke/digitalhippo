@@ -14,5 +14,26 @@ pnpm dev
 bun dev
 ```
 
+## Features :
+-- Payload CMS will be cashed to save resources.
+-- We use our own created server via express.
+--From server we send emails, log users, authenticate users, manage products
+-- We are using mongoDB
+
+
 ## Packages :
-shadCn, lucideReact
+
+--ShadCn : UI
+
+--LucideReact : Icons
+
+--Express & type/express : For selfHosting our app without Vercel.
+
+--Dotenv : Loads environment variables from a .env file into process.env.
+
+--Payload : Headless CMS.
+-- @payloadcms/richtext-slate : Slate Rich Text Editor for Payload.
+-- @payloadcms/bundler-webpack: Official Webpack adapter for Payload.
+-- @payloadcms/db-mongodb : Official MongoDB adapter for Payload.
+
+--cross-env : Run scripts that set and use environment variables across platforms. For us between express and Next.js

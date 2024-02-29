@@ -16,9 +16,9 @@ import Image from "next/image";
 
 const Cart = () => {
   //mock count. later will be dynamic
-  const itemCount = 1;
+  const itemCount = 0;
 
-  
+
   //mock fee
   const fee = 1;
 
