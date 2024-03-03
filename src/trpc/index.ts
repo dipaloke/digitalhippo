@@ -1,12 +1,11 @@
+import { authRouter } from "./auth-router";
 import { publicProcedure, router } from "./trpc";
 
 //this is backend
 
 export const appRouter = router({
   //API endpoint
-  anyApiRoute: publicProcedure.query(() => {
-    return "hello";
-  }),
+ auth: authRouter
 });
 
 export type AppRouter = typeof appRouter;

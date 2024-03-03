@@ -13,19 +13,26 @@ import {
   AuthCredentialsValidator,
   TAuthCredentialsValidator,
 } from "@/lib/validators/account-credentials-validator";
+import { trpc } from "@/trpc/client";
 
 const SignUpPage = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TAuthCredentialsValidator>({ //makes the register function & fromSubmit fully type safe
+  } = useForm<TAuthCredentialsValidator>({
+    //makes the register function & fromSubmit fully type safe
     //resolver takes validation schema
     resolver: zodResolver(AuthCredentialsValidator),
   });
 
+  //create user to see valid credentials. useMutation used for create,delete etc. except read operation
+  //isPending is as same as isLoading state
+  const { mutate, isPending } = trpc.auth.createPayloadUser.useMutation({});
+
   const onSubmit = ({ email, password }: TAuthCredentialsValidator) => {
     //send data to server
+    mutate({ email, password });
   };
 
   return (
@@ -66,6 +73,7 @@ const SignUpPage = () => {
                   <Label htmlFor="password">Password</Label>
                   <Input
                     {...register("password")}
+                    type="password"
                     className={cn({
                       "focus-visible:ring-red-500": errors.password,
                     })}
