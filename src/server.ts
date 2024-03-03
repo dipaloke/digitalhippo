@@ -3,9 +3,20 @@
 import e from "express";
 import { getPayloadClient } from "./get-payload";
 import { nextApp, nextHandler } from "./next-utils";
+import * as trpcExpress from "@trpc/server/adapters/express";
+import { appRouter } from "./trpc";
 
 const app = e();
 const PORT = Number(process.env.PORT) || 3000; //Change Port number according to host provided port number, when hosting on server.
+
+// allows us to take something from express (ex: req, res), then attaches them to context to make then useable in nextJs.
+const createContext = ({
+  req,
+  res,
+}: trpcExpress.CreateExpressContextOptions) => ({
+  req,
+  res,
+});
 
 const start = async () => {
   //we are going to use PAYLOAD headless cms for admin dashboard
@@ -18,6 +29,15 @@ const start = async () => {
       },
     },
   });
+
+  //forward the req to tRPC next js to handle it.
+  app.use(
+    "/api/trpc",
+    trpcExpress.createExpressMiddleware({
+      router: appRouter,
+      createContext,
+    })
+  );
 
   //express middleware for req and res.Each req and res we just forward to nextJs
   app.use((req, res) => nextHandler(req, res));
