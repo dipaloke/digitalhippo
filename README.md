@@ -13,6 +13,7 @@ pnpm dev
 # or
 bun dev
 ```
+- Change domain name for email verification in get-payload.ts & in resend.com
 
 ## Features :
 
@@ -21,6 +22,7 @@ bun dev
 - From server we send emails, log users, authenticate users, manage products
 - We are using mongoDB.
 - We use tRPC to make both FrontEnd and BackEnd typeSafe.
+- Resend is used for sending email verification.
 
 ## Packages :
 
@@ -44,4 +46,5 @@ bun dev
 - Sonner: toast message (opinionated toast component for React).
 
 - tRPC: makes sure the front and backend have same types making both typeSafe.
--
+
+- Nodemailer & @types/nodemailer : for sending emails from Node.js & for the nodemailer types.

@@ -1,12 +1,25 @@
 //This is a database client and made sure to cache it
+
 import dotenv from "dotenv";
 import path from "path";
 import type { InitOptions } from "payload/config";
 import payload, { Payload } from "payload";
+import nodemailer from "nodemailer";
 
 //Configure the .env file with dotenv
 dotenv.config({
   path: path.resolve(__dirname, "../.env"),
+});
+
+//Defining the transport for sending email verification
+const transporter = nodemailer.createTransport({
+  host: "smtp.resend.com",
+  secure: true,
+  port: 465, //secure port for sending emails
+  auth: {
+    user: "resend",
+    pass: process.env.RESEND_API_KEY,
+  },
 });
 
 //To save resources & get our client we will be using Caching.
@@ -40,6 +53,11 @@ export const getPayloadClient = async ({
 
   if (!cached.promise) {
     cached.promise = payload.init({
+      email: {
+        transport: transporter,
+        fromAddress: "onboarding@resend.dev", //change here : your personal domain name. First add the domain to resend
+        fromName: "DigitalHippo",
+      },
       secret: process.env.PAYLOAD_SECRET,
       local: initOptions?.express ? false : true,
       ...(initOptions || {}),
