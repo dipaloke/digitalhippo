@@ -7,6 +7,7 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 export const authRouter = router({
+  //api for Creating Users
   createPayloadUser: publicProcedure
     .input(AuthCredentialsValidator) //getting the email and password from the frontend
     .mutation(async ({ input }) => {
@@ -57,5 +58,30 @@ export const authRouter = router({
 
       if (!isVerified) throw new TRPCError({ code: "UNAUTHORIZED" });
       return { success: true };
+    }),
+
+  //sign-in api endpoint
+  signIn: publicProcedure
+    .input(AuthCredentialsValidator)
+    .mutation(async ({ input, ctx }) => {
+      const { email, password } = input;
+      const { res } = ctx;
+
+      const payload = await getPayloadClient();
+
+      //logging-in the user in server
+      try {
+        await payload.login({
+          collection: "users",
+          data: {
+            email,
+            password,
+          },
+          res, //returning authentication token (cookie) from server.
+        });
+        return { success: true };
+      } catch (err) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
     }),
 });

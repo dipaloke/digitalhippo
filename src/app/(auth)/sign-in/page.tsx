@@ -15,9 +15,29 @@ import {
 } from "@/lib/validators/account-credentials-validator";
 import { toast } from "sonner";
 import { ZodError } from "zod";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
-const SignUpPage = () => {
+const SignInPage = () => {
+  //We are going to pass the state Weather a user is  seller or not as an URL query into this component.
+  //thats why we need to receive it whenever the page is loaded.
+
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const isSeller = searchParams.get("as") === "seller"; //(ex. /sign-in?as=seller)
+
+  // origin is necessary when we want to redirect ex. from card page to sign-in page. (if authentication fails for a user)
+  //& redirect back where they were after signing in.
+  const origin = searchParams.get("origin");
+
+  //we are getting the state(if user is seller) from url. so changing the url should let us continue as a seller.
+  const continueAsSeller = () => {
+    router.push("?as=seller");
+  };
+
+  const continueAsBuyer = () => {
+    router.replace("sign-in", undefined); //returning back to default(undefined) or as buyer
+  };
+
   const {
     register,
     handleSubmit,
@@ -28,32 +48,38 @@ const SignUpPage = () => {
     resolver: zodResolver(AuthCredentialsValidator),
   });
 
-  const router = useRouter();
-
   //create user to see valid credentials. useMutation used for create,delete etc. except read operation
   //isPending is as same as isLoading state
-  const { mutate, isPending } = trpc.auth.createPayloadUser.useMutation({
-    onError: (err) => {
-      if (err.data?.code === "CONFLICT") {
-        toast.error("This email is already in use. Sign in instead? ");
-        return;
-      }
-      if (err instanceof ZodError) {
-        toast.error(err.issues[0].message); //this will display the zod password length error
+  const { mutate: signIn, isPending } = trpc.auth.signIn.useMutation({
+    onSuccess: () => {
+      toast.success("Signed in successfully");
+      router.refresh(); //to refresh the page after sign in
+
+      //if people are redirected from a certain page return there after sign in
+      if (origin) {
+        router.push(`/${origin}`);
         return;
       }
 
-      toast.error("Something went wrong. Please try again.");
+      //if user is a seller then redirect to seller dashboard to list products
+      if (isSeller) {
+        router.push("/sell");
+        return;
+      }
+
+      //if none of this cases are true redirect to homepage
+      router.push("/");
     },
-    onSuccess: ({ sentToEmail }) => {
-      toast.success(`Verification email sent to ${sentToEmail}. `);
-      router.push("/verify-email?to=" + sentToEmail); //passing as query param in email-verification page.
+    onError: (err) => {
+      if (err.data?.code === "UNAUTHORIZED") {
+        toast.error("Invalid email or password");
+      }
     },
   });
 
   const onSubmit = ({ email, password }: TAuthCredentialsValidator) => {
     //send data to server
-    mutate({ email, password });
+    signIn({ email, password });
   };
 
   return (
@@ -62,15 +88,17 @@ const SignUpPage = () => {
         <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
           <div className="flex flex-col items-center space-y-2 text-center">
             <Icons.logo className="h-20 w-20" />
-            <h1 className="text-2xl font-bold">Create an account</h1>
+            <h1 className="text-2xl font-bold">
+              Sign in to your {isSeller ? "seller" : ""} account
+            </h1>
             <Link
               className={buttonVariants({
                 variant: "link",
                 className: "gap-1.5",
               })}
-              href="/sign-in"
+              href="/sign-up"
             >
-              Already have an account? Sign-in
+              Don&apos;t have an account? Sign-Up Now.
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -111,9 +139,40 @@ const SignUpPage = () => {
                     </p>
                   )}
                 </div>
-                <Button>Sign up</Button>
+                <Button>Sign in</Button>
               </div>
             </form>
+            <div className="relative">
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 flex items-center"
+              >
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">
+                  or
+                </span>
+              </div>
+            </div>
+
+            {isSeller ? (
+              <Button
+                onClick={continueAsBuyer}
+                variant="secondary"
+                disabled={isPending}
+              >
+                Continue as customer
+              </Button>
+            ) : (
+              <Button
+                onClick={continueAsSeller}
+                variant="secondary"
+                disabled={isPending}
+              >
+                Continue as seller
+              </Button>
+            )}
           </div>
         </div>
       </div>
@@ -121,4 +180,4 @@ const SignUpPage = () => {
   );
 };
 
-export default SignUpPage;
+export default SignInPage;

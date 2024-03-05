@@ -6,6 +6,7 @@ import { nextApp, nextHandler } from "./next-utils";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import { appRouter } from "./trpc";
 
+
 const app = e();
 const PORT = Number(process.env.PORT) || 3000; //Change Port number according to host provided port number, when hosting on server.
 
@@ -17,6 +18,9 @@ const createContext = ({
   req,
   res,
 });
+
+// export type ExpressContext = inferAsyncReturnType<typeof createContext>
+export type ExpressContext = Awaited<ReturnType<typeof createContext>>
 
 const start = async () => {
   //we are going to use PAYLOAD headless cms for admin dashboard
