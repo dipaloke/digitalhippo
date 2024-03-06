@@ -23,7 +23,11 @@ bun dev
 - We are using mongoDB.
 - We use tRPC to make both FrontEnd and BackEnd typeSafe.
 - Resend is used for sending email verification.
-- using origin users will be redirected to sign-in page if user Authentication fails & redirect back where user was after signing in.
+- using origin, users will be redirected to sign-in page if user Authentication fails & redirect    back where user was after signing in.
+- Same User can buy or sell a product.
+- Product images will be directly associated with the user not with the product to prevent users from
+accessing all the media files from other users.(Only for Dashboard not frontend)
+-
 
 
 ## Packages :

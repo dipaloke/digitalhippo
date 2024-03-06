@@ -5,15 +5,19 @@ import path from "path";
 import { buildConfig } from "payload/config";
 import { Users } from "./collections/Users";
 import  dotenv  from "dotenv";
+import { Products } from "./collections/Products/Products";
+import { Media } from "./collections/Media";
+
 
 
 dotenv.config({
   path: path.resolve(__dirname, "../.env")
 })
 
+
 export default buildConfig({
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL || "",
-  collections: [Users], //collections:[] later will be our orders, products, users etc.
+  collections: [Users, Products, Media], //collections:[] later will be our orders, products, users etc.
   routes: {
     admin: "/sell", // changing the default CMS admin URL(/admin) to (/sell)
   },
