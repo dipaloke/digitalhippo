@@ -28,7 +28,7 @@ bun dev
 
 ## Packages :
 
-- ShadCn : UI : Sign-up page(input, label,)
+- ShadCn : UI : Sign-up page(input, label, dropdown-menu, )
 
 - LucideReact : Icons
 

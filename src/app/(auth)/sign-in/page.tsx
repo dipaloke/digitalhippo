@@ -14,7 +14,6 @@ import {
   TAuthCredentialsValidator,
 } from "@/lib/validators/account-credentials-validator";
 import { toast } from "sonner";
-import { ZodError } from "zod";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const SignInPage = () => {
