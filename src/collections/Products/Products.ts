@@ -1,18 +1,13 @@
 import { PRODUCT_CATAGORIES } from "../../config";
 import { slateEditor } from "@payloadcms/richtext-slate";
 import { CollectionConfig } from "payload/types";
+import { Media } from "../Media";
 
 export const Products: CollectionConfig = {
   slug: "products",
   //in admin dashboard we are going to use the name field as default value
   admin: {
     useAsTitle: "name",
-  },
-  //for uploading images in product details
-  upload: {
-    staticURL: "/product_details_images",
-    staticDir: "product_details_images",
-    mimeTypes: ["image/*"],
   },
   //access rules will determine who can access which part of the product.
   access: {},
@@ -67,8 +62,14 @@ export const Products: CollectionConfig = {
             "strikethrough",
             "underline",
           ],
+          upload: {
+            collections: {
+              Media
+            },
+          }
         },
       }),
+
       label: "Product details",
     },
     {
