@@ -8,6 +8,12 @@ export const Products: CollectionConfig = {
   admin: {
     useAsTitle: "name",
   },
+  //for uploading images in product details
+  upload: {
+    staticURL: "/product_details_images",
+    staticDir: "product_details_images",
+    mimeTypes: ["image/*"],
+  },
   //access rules will determine who can access which part of the product.
   access: {},
   fields: [
@@ -80,14 +86,14 @@ export const Products: CollectionConfig = {
       options: PRODUCT_CATAGORIES.map(({ label, value }) => ({ label, value })),
       required: true,
     },
-    // {
-    //   name: "product_files",
-    //   label: "Product file(s)",
-    //   type: "relationship",
-    //   required: true,
-    //   relationTo: "product_files", //another collection
-    //   hasMany: true, //can have multiple files
-    // },
+    {
+      name: "product_files",
+      label: "Product file(s)",
+      type: "relationship",
+      required: true,
+      relationTo: "product_files", //another collection
+      hasMany: false,
+    },
     //products needs to-be verified by admin
     {
       name: "approvedForSale",
