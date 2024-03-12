@@ -32,7 +32,7 @@ accessing all the media files from other users.(Only for Dashboard not frontend)
 
 ## Packages :
 
-- ShadCn : UI : Sign-up page(input, label, dropdown-menu, )
+- ShadCn : UI : Sign-up page(input, label, dropdown-menu, skelton)
 
 - LucideReact : Icons
 
