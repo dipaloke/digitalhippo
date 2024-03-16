@@ -27,7 +27,7 @@ bun dev
 - Same User can buy or sell a product.
 - Product images will be directly associated with the user not with the product to prevent users from
 accessing all the media files from other users.(Only for Dashboard not frontend)
--
+- 4 products will be rendered side by side. Each products will have Image slider
 
 
 ## Packages :
@@ -54,3 +54,5 @@ accessing all the media files from other users.(Only for Dashboard not frontend)
 - tRPC: makes sure the front and backend have same types making both typeSafe.
 
 - Nodemailer & @types/nodemailer : for sending emails from Node.js & for the nodemailer types.
+
+- Swiper : Image slider
