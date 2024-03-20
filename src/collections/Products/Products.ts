@@ -1,7 +1,6 @@
 import { PRODUCT_CATAGORIES } from "../../config";
 import { slateEditor } from "@payloadcms/richtext-slate";
 import { CollectionConfig } from "payload/types";
-import { Media } from "../Media";
 
 export const Products: CollectionConfig = {
   slug: "products",
@@ -30,47 +29,54 @@ export const Products: CollectionConfig = {
     },
     //richtext extra added by me.
     {
-      name: "description",
+      name: "richText",
       type: "richText",
       editor: slateEditor({
         admin: {
-          elements: [
-            // customize elements allowed in Slate editor here
-            "h1",
-            "h2",
-            "h3",
-            "h4",
-            "h5",
-            "h6",
-            "h6",
-            "h6",
-            "blockquote",
-            "link",
-            "ol",
-            "ul",
-            "textAlign",
-            "indent",
-            "relationship",
-            "upload",
-            "textAlign",
-          ],
-          leaves: [
-            // customize leaves allowed in Slate editor here
-            "bold",
-            "code",
-            "italic",
-            "strikethrough",
-            "underline",
-          ],
           upload: {
             collections: {
-              Media
+              media: {
+                fields: [
+                  {
+                    type: "richText",
+                    name: "description",
+                    label: "Product details",
+                    editor: slateEditor({
+                      admin: {
+                        elements: [
+                          // customize elements allowed in Slate editor here
+                          "h1",
+                          "h2",
+                          "h3",
+                          "h4",
+                          "h5",
+                          "h6",
+                          "blockquote",
+                          "link",
+                          "ol",
+                          "ul",
+                          "textAlign",
+                          "indent",
+                          "relationship",
+                        ],
+                        leaves: [
+                          // customize leaves allowed in Slate editor here
+                          "bold",
+                          "code",
+                          "italic",
+                          "strikethrough",
+                          "underline",
+                        ],
+                      },
+                    }),
+                  },
+                ],
+              },
             },
-          }
+          },
         },
       }),
-
-      label: "Product details",
+      required: true,
     },
     {
       name: "price",
