@@ -18,7 +18,10 @@ type Leaf = {
 
 type RenderNode = (node: Leaf, index: number) => React.ReactElement | null;
 
-const serialize = (children: Children | undefined, renderNode?: RenderNode): React.ReactElement[] =>
+const serialize = (
+  children: Children | undefined,
+  renderNode?: RenderNode
+): React.ReactElement[] =>
   (children ?? [])
     .flatMap((node, i) => {
       if (Text.isText(node)) {
@@ -75,7 +78,11 @@ const serialize = (children: Children | undefined, renderNode?: RenderNode): Rea
         case "h6":
           return <h6 key={i}>{serialize(node.children, renderNode)}</h6>;
         case "blockquote":
-          return <blockquote key={i}>{serialize(node.children, renderNode)}</blockquote>;
+          return (
+            <blockquote key={i}>
+              {serialize(node.children, renderNode)}
+            </blockquote>
+          );
         case "ul":
           return <ul key={i}>{serialize(node.children, renderNode)}</ul>;
         case "ol":

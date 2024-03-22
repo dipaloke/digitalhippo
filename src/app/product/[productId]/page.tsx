@@ -9,6 +9,10 @@ import type {
   RichTextCustomLeaf,
 } from "@payloadcms/richtext-slate";
 import RichText from "@/components/richText";
+import { Check, Shield } from "lucide-react";
+import ImageSlider from "@/components/ImageSlider";
+import ProductReel from "@/components/ProductReel";
+import AddToCartButton from "@/components/AddToCartButton";
 
 interface PageProps {
   params: {
@@ -46,6 +50,11 @@ const ProductPage = async ({ params }: PageProps) => {
   const label = PRODUCT_CATAGORIES.find(
     ({ value }) => value === product.category
   )?.label;
+
+  //extracting image urls
+  const validUrls = product.images
+    .map(({ image }) => (typeof image === "string" ? image : image.url))
+    .filter(Boolean) as string[];
 
   return (
     <MaxWithWrapper className="bg-white">
@@ -97,17 +106,57 @@ const ProductPage = async ({ params }: PageProps) => {
               </div>
 
               <div className="mt-4 space-y-6">
-                <p className="text-base text-muted-foreground">
-                  <RichText
-                    className="font-medium text-gray-900"
-                    content={product.description as RichTextCustomElement[]}
-                  />
+                <div className="text-base text-muted-foreground">
+                  <RichText content={product.description} />
+                </div>
+              </div>
+              <div className="mt-6 flex items-center">
+                <Check
+                  aria-hidden="true"
+                  className="h-5 w-5 flex-shrink-0 text-green-500"
+                />
+                <p className="ml-2 text-sm text-muted-foreground">
+                  Eligible for instant delivery
                 </p>
               </div>
             </section>
           </div>
+
+          {/* rendering product images */}
+          <div className="mt-10 lg:col-start-2 lg:mt-0 lg:self-center">
+            <div className="aspect-square rounded-lg">
+              <ImageSlider urls={validUrls} />
+            </div>
+          </div>
+
+          {/* Add to cart part */}
+          <div className="mt-10 lg:col-start-1 lg:row-start-2 lg:max-w-lg lg:self-start">
+            <div>
+              <div className="mt-10">
+                <AddToCartButton />
+              </div>
+              <div className="mt-6 text-center">
+                <div className="group inline-flex text-sm text-medium ">
+                  <Shield
+                    aria-hidden="true"
+                    className="mr-2 h-5 w-5 flex-shrink-0 text-gray-400"
+                  />
+                  <span className="text-muted-foreground hover:text-gray-700">
+                    30 Day Return Guarantee
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+      {/* similar products */}
+      <ProductReel
+        href="/products"
+        query={{ category: product.category, limit: 4 }}
+        title={`Similar ${label}`}
+        subTitle={`Browse similar high-quality ${label}, just like ${product.name}`}
+      />
     </MaxWithWrapper>
   );
 };
