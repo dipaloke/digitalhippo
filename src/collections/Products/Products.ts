@@ -29,7 +29,8 @@ export const Products: CollectionConfig = {
     },
     //richtext extra added by me.
     {
-      name: "richText",
+      name: "description",
+      label: "Description",
       type: "richText",
       editor: slateEditor({
         admin: {

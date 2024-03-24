@@ -4,10 +4,6 @@ import { getPayloadClient } from "@/get-payload";
 import { formatPrice } from "@/lib/utils";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import type {
-  RichTextCustomElement,
-  RichTextCustomLeaf,
-} from "@payloadcms/richtext-slate";
 import RichText from "@/components/richText";
 import { Check, Shield } from "lucide-react";
 import ImageSlider from "@/components/ImageSlider";
@@ -90,14 +86,14 @@ const ProductPage = async ({ params }: PageProps) => {
 
             <div className="mt-4">
               <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                {product.name as string}
+                {product.name}
               </h1>
             </div>
 
             <section className="mt-4">
               <div className="flex items-center">
                 <p className="font-medium text-gray-900">
-                  {formatPrice(product.price as number)}
+                  {formatPrice(product.price)}
                 </p>
 
                 <div className="ml-4 border-l text-muted-foreground border-gray-300 pl-4">
@@ -110,6 +106,7 @@ const ProductPage = async ({ params }: PageProps) => {
                   <RichText content={product.description} />
                 </div>
               </div>
+
               <div className="mt-6 flex items-center">
                 <Check
                   aria-hidden="true"
@@ -123,17 +120,17 @@ const ProductPage = async ({ params }: PageProps) => {
           </div>
 
           {/* rendering product images */}
-          <div className="mt-10 lg:col-start-2 lg:mt-0 lg:self-center">
+          <div className="mt-10 lg:col-start-2 lg:row-span-2  lg:mt-0 lg:self-center">
             <div className="aspect-square rounded-lg">
               <ImageSlider urls={validUrls} />
             </div>
           </div>
 
           {/* Add to cart part */}
-          <div className="mt-10 lg:col-start-1 lg:row-start-2 lg:max-w-lg lg:self-start">
+          <div className="mt-10 lg:col-start-1 lg:row-span-2 lg:max-w-lg lg:self-start">
             <div>
               <div className="mt-10">
-                <AddToCartButton />
+                <AddToCartButton product={product} />
               </div>
               <div className="mt-6 text-center">
                 <div className="group inline-flex text-sm text-medium ">

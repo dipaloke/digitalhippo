@@ -1,5 +1,5 @@
 "use client";
-import { ShoppingCartIcon } from "lucide-react";
+import { Loader, ShoppingCartIcon } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -13,11 +13,31 @@ import { formatPrice } from "@/lib/utils";
 import Link from "next/link";
 import { buttonVariants } from "./ui/button";
 import Image from "next/image";
+import { useCart } from "@/hooks/use-cart";
+import { ScrollArea } from "./ui/scroll-area";
+import CartItem from "./CartItem";
+import { useEffect, useState } from "react";
 
 const Cart = () => {
-  //mock count. later will be dynamic
-  const itemCount = 0;
+  const { items } = useCart();
 
+  const itemCount = items.length;
+
+  //whether our component is mounted or not.
+  const [isMounted, setIsMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  //total amount of product prices
+  const cartTotal = items.reduce((total, { product }) => {
+    if (product) {
+      return total + product.price;
+    } else {
+      return total;
+    }
+  }, 0);
 
   //mock fee
   const fee = 1;
@@ -30,19 +50,31 @@ const Cart = () => {
           className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
         />
         <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
-          0{" "}
+          {isMounted ? (
+            itemCount
+          ) : (
+            <div className="relative h-screen flex items-center justify-center">
+              <Loader className="animate-spin text-muted-foreground h-4 w-4" />
+            </div>
+          )}
           {/* //TODO: Dynamically show the amount of items beside cart logo */}
         </span>
       </SheetTrigger>
       <SheetContent className="flex w-full flex-col pr-0 sm:max-w-lg">
         <SheetHeader className="space-y-2.5 pr-6">
-          <SheetTitle> Cart (0) </SheetTitle>
+          <SheetTitle> Cart ({itemCount}) </SheetTitle>
         </SheetHeader>
         {itemCount > 0 ? (
           <>
             <div className="flex w-full flex-col pr-6">
               {/* //TODO: Cart logic */}
-              Cart items
+              <ScrollArea>
+                {items.map(({ product }) =>
+                  product ? (
+                    <CartItem product={product} key={product.id} />
+                  ) : null
+                )}
+              </ScrollArea>
             </div>
             <div className="space-y-4 pr-6">
               <Separator />
@@ -52,13 +84,13 @@ const Cart = () => {
                   <span>Free</span>
                 </div>
                 <div className="flex">
-                  <span className="flex-1">Transaction</span>
+                  <span className="flex-1">Transaction Fee</span>
                   <span>{formatPrice(fee)}</span>
                 </div>
                 <div className="flex">
                   <span className="flex-1">Total</span>
                   {/* //TODO: Dynamically calculate the total */}
-                  <span>{formatPrice(fee)}</span>
+                  <span>{formatPrice(cartTotal + fee)}</span>
                 </div>
               </div>
               <SheetFooter>

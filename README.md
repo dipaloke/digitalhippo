@@ -13,6 +13,7 @@ pnpm dev
 # or
 bun dev
 ```
+
 - Change domain name for email verification in get-payload.ts & in resend.com
 
 ## Features :
@@ -23,13 +24,13 @@ bun dev
 - We are using mongoDB.
 - We use tRPC to make both FrontEnd and BackEnd typeSafe.
 - Resend is used for sending email verification.
-- using origin, users will be redirected to sign-in page if user Authentication fails & redirect    back where user was after signing in.
+- using origin, users will be redirected to sign-in page if user Authentication fails & redirect back where user was after signing in.
 - Same User can buy or sell a product.
 - Product images will be directly associated with the user not with the product to prevent users from
-accessing all the media files from other users.(Only for Dashboard not frontend)
+  accessing all the media files from other users.(Only for Dashboard not frontend)
 - 4 products will be rendered side by side. Each products will have Image slider.
-- Single product page will contain breadcrumbs. 
-
+- Single product page will contain breadcrumbs.
+- People can add/remove products to cart, also can clear the cart.
 
 ## Packages :
 
@@ -42,9 +43,9 @@ accessing all the media files from other users.(Only for Dashboard not frontend)
 - Dotenv : Loads environment variables from a .env file into process.env.
 
 - Payload : Headless CMS.
--- @payloadcms/richtext-slate : Slate Rich Text Editor for Payload.
--- @payloadcms/bundler-webpack: Official Webpack adapter for Payload.
--- @payloadcms/db-mongodb : Official MongoDB adapter for Payload.
+  -- @payloadcms/richtext-slate : Slate Rich Text Editor for Payload.
+  -- @payloadcms/bundler-webpack: Official Webpack adapter for Payload.
+  -- @payloadcms/db-mongodb : Official MongoDB adapter for Payload.
 
 - Cross-env : Run scripts that set and use environment variables across platforms. For us between express and Next.js
 
@@ -57,3 +58,5 @@ accessing all the media files from other users.(Only for Dashboard not frontend)
 - Nodemailer & @types/nodemailer : for sending emails from Node.js & for the nodemailer types.
 
 - Swiper : Image slider
+
+- Zustand : A small, fast and scalable bearbones state-management solution
