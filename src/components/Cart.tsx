@@ -53,8 +53,8 @@ const Cart = () => {
           {isMounted ? (
             itemCount
           ) : (
-            <div className="relative h-screen flex items-center justify-center">
-              <Loader className="animate-spin text-muted-foreground h-4 w-4" />
+            <div className="relative h-screen flex items-center justify-center ">
+              <Loader className="animate-spin text-muted-foreground h-4 w-4 flex-shrink-0" />
             </div>
           )}
           {/* //TODO: Dynamically show the amount of items beside cart logo */}
