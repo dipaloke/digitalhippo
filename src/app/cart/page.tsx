@@ -118,7 +118,7 @@ const CartPage = () => {
                           </div>
                           {/* remove item button */}
                           <div className="mt-4 sm:mt-0 sm:pr-9 w-20">
-                            <div className="absolute ring-0 top-0">
+                            <div className="absolute right-0 top-0">
                               <Button
                                 aria-label="remove product"
                                 onClick={() => removeItem(product.id)}

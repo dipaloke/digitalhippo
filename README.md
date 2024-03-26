@@ -31,6 +31,8 @@ bun dev
 - 4 products will be rendered side by side. Each products will have Image slider.
 - Single product page will contain breadcrumbs.
 - People can add/remove products to cart, also can clear the cart.
+- stripe is used for checkout session. card, paypal & wechatPay are enabled.
+- After payment people gets redirected to thankyou page, from where they can download the product.
 
 ## Packages :
 
@@ -59,4 +61,6 @@ bun dev
 
 - Swiper : Image slider
 
-- Zustand : A small, fast and scalable bearbones state-management solution
+- Zustand : A small, fast and scalable bearbones state-management solution.
+
+- Stripe: Node library provides convenient access to the Stripe API from applications.

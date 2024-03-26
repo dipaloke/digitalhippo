@@ -1,16 +1,16 @@
-
-
 import { z } from "zod";
 import { authRouter } from "./auth-router";
 import { publicProcedure, router } from "./trpc";
 import { QueryValidator } from "../lib/validators/query-validator";
 import { getPayloadClient } from "../get-payload";
+import { paymentRouter } from "./payment-router";
 
 //this is backend
 
 export const appRouter = router({
   //API endpoint
   auth: authRouter,
+  payment: paymentRouter,
 
   //This is the logic for getting infinite products.
 
@@ -39,9 +39,13 @@ export const appRouter = router({
         };
       });
 
-      const page = cursor || 1
+      const page = cursor || 1;
 
-      const { docs: items, hasNextPage, nextPage } = await payload.find({
+      const {
+        docs: items,
+        hasNextPage,
+        nextPage,
+      } = await payload.find({
         collection: "products",
         where: {
           approvedForSale: {
@@ -57,8 +61,8 @@ export const appRouter = router({
 
       return {
         items,
-        nextPage: hasNextPage ? nextPage : null
-      }
+        nextPage: hasNextPage ? nextPage : null,
+      };
     }),
 });
 

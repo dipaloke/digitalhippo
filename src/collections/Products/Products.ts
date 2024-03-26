@@ -1,6 +1,14 @@
+import { Product } from "../../payload-types";
 import { PRODUCT_CATAGORIES } from "../../config";
 import { slateEditor } from "@payloadcms/richtext-slate";
 import { CollectionConfig } from "payload/types";
+import { BeforeChangeHook } from "payload/dist/collections/config/types";
+import { stripe } from "../../lib/stripe";
+
+const addUser: BeforeChangeHook<Product> = async ({ req, data }) => {
+  const user = req.user;
+  return { ...data, user: user.id };
+};
 
 export const Products: CollectionConfig = {
   slug: "products",
@@ -10,6 +18,48 @@ export const Products: CollectionConfig = {
   },
   //access rules will determine who can access which part of the product.
   access: {},
+  hooks: {
+    beforeChange: [
+      //this code will run before a product is saved to our database
+      addUser,
+      async (args) => {
+        //if user is creating a product then we also need to get an stripe id for the product(create product).
+        if (args.operation === "create") {
+          const data = args.data as Product;
+
+          const createdProduct = await stripe.products.create({
+            name: data.name,
+            default_price_data: {
+              currency: "USD",
+              unit_amount: Math.round(data.price * 100), //price in cents
+            },
+          });
+          //Now updating our product with following fields before gets saved in db
+          const updated: Product = {
+            ...data,
+            stripeId: createdProduct.id,
+            priceId: createdProduct.default_price as string,
+          };
+          return updated;
+        } else if (args.operation === "update") {
+          //we don't need new stripe id if product is being updated.
+          const data = args.data as Product;
+
+          const updatedProduct = await stripe.products.update(data.stripeId!, {
+            name: data.name,
+            default_price: data.priceId!,
+          });
+          //Now updating our product with following fields before gets saved in db
+          const updated: Product = {
+            ...data,
+            stripeId: updatedProduct.id,
+            priceId: updatedProduct.default_price as string,
+          };
+          return updated;
+        }
+      },
+    ],
+  },
   fields: [
     {
       name: "user", //who created the product.
