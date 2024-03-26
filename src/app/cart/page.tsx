@@ -3,13 +3,28 @@ import { Button } from "@/components/ui/button";
 import { PRODUCT_CATAGORIES } from "@/config";
 import { useCart } from "@/hooks/use-cart";
 import { cn, formatPrice } from "@/lib/utils";
+import { trpc } from "@/trpc/client";
 import { Check, Loader2, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const CartPage = () => {
   const { items, removeItem } = useCart();
+
+  const router = useRouter();
+
+  //calling payment api
+  const { mutate: createCheckoutSession, isPending } =
+    trpc.payment.createSession.useMutation({
+      onSuccess: ({ url }) => {
+        if (url) router.push(url); //takes to stripe hosted checkout page
+      },
+    });
+
+  //getting the array of productIds
+  const productIds = items.map(({ product }) => product.id);
 
   const [isMounted, setIsMounted] = useState<boolean>(false);
 
@@ -184,7 +199,15 @@ const CartPage = () => {
             </div>
             {/* checkout button */}
             <div className="mt-6">
-              <Button className="w-full" size="lg">
+              <Button
+                disabled={items.length === 0 || isPending}
+                onClick={() => createCheckoutSession({ productIds })}
+                className="w-full"
+                size="lg"
+              >
+                {isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin mr-1.5" />
+                ) : null}
                 Checkout
               </Button>
             </div>

@@ -37,7 +37,7 @@ export const paymentRouter = router({
         collection: "orders",
         data: {
           _isPaid: false, //default value
-          products: filteredProducts,
+          products: filteredProducts.map((prod) => prod.id), //only need the ids not entire product
           user: user.id,
         },
       });
@@ -65,7 +65,12 @@ export const paymentRouter = router({
         const stripeSession = await stripe.checkout.sessions.create({
           success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/thank-you?orderId=${order.id}`, //where people will be redirected after payment process.
           cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/cart`, //redirect to cart if user cancels
-          payment_method_types: ["card", "paypal", "wechat_pay"],
+          payment_method_types: ["card", "wechat_pay", "link"],
+          payment_method_options: {
+            wechat_pay: {
+              client: "web",
+            },
+          },
           mode: "payment",
           metadata: {
             //necessary for webhook. to know who paid and for what product order(order id).
