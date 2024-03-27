@@ -31,8 +31,9 @@ bun dev
 - 4 products will be rendered side by side. Each products will have Image slider.
 - Single product page will contain breadcrumbs.
 - People can add/remove products to cart, also can clear the cart.
-- stripe is used for checkout session. card, paypal & wechatPay are enabled.
+- stripe is used for checkout session. card & wechatPay are enabled.
 - After payment people gets redirected to thankyou page, from where they can download the product.
+- website will keep polling for stripe webhook until payment was made successfully. Otherwise we don't release the asset to download.
 
 ## Packages :
 

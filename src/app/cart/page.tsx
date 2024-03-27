@@ -9,6 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const CartPage = () => {
   const { items, removeItem } = useCart();
@@ -20,6 +21,11 @@ const CartPage = () => {
     trpc.payment.createSession.useMutation({
       onSuccess: ({ url }) => {
         if (url) router.push(url); //takes to stripe hosted checkout page
+      },
+      onError: () => {
+        toast.error(
+          "UNAUTHORIZED: To proceed with your purchase, please Sign In. Your cart items will be securely retained for your convenience."
+        );
       },
     });
 
