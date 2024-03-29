@@ -5,7 +5,9 @@ import { getPayloadClient } from "./get-payload";
 import { nextApp, nextHandler } from "./next-utils";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import { appRouter } from "./trpc";
-
+import bodyParser from "body-parser";
+import { IncomingMessage } from "http";
+import { stripeWebhookHandler } from "./webhooks";
 
 const app = e();
 const PORT = Number(process.env.PORT) || 3000; //Change Port number according to host provided port number, when hosting on server.
@@ -20,9 +22,20 @@ const createContext = ({
 });
 
 // export type ExpressContext = inferAsyncReturnType<typeof createContext>
-export type ExpressContext = Awaited<ReturnType<typeof createContext>>
+export type ExpressContext = Awaited<ReturnType<typeof createContext>>;
+
+export type WebhookRequest = IncomingMessage & { rawBody: Buffer };
 
 const start = async () => {
+  //stripe webhook middleware to modify the msg stripe sends us.
+  const webhookMiddleware = bodyParser.json({
+    verify: (req: WebhookRequest, _, buffer) => {
+      req.rawBody = buffer;
+    },
+  });
+
+  app.post("/api/webhooks/stripe", webhookMiddleware, stripeWebhookHandler);
+
   //we are going to use PAYLOAD headless cms for admin dashboard
   //super similar as DB Client
   const payload = await getPayloadClient({

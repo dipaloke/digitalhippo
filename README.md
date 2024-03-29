@@ -34,10 +34,11 @@ bun dev
 - stripe is used for checkout session. card & wechatPay are enabled.
 - After payment people gets redirected to thankyou page, from where they can download the product.
 - website will keep polling for stripe webhook until payment was made successfully. Otherwise we don't release the asset to download.
+- Receipt Email template taken from ([react email](https://demo.react.email/)).
 
 ## Packages :
 
-- ShadCn : UI : Sign-up page(input, label, dropdown-menu, skelton)
+- ShadCn : UI : Sign-up page(input, label, dropdown-menu, skelton, scrollArea)
 
 - LucideReact : Icons
 
@@ -65,3 +66,11 @@ bun dev
 - Zustand : A small, fast and scalable bearbones state-management solution.
 
 - Stripe: Node library provides convenient access to the Stripe API from applications.
+
+- Body-parser : Parse incoming request bodies in a middleware before your handlers, available under the req.body property(works with express).
+
+- Resend: Node.js library for the Resend API(for sending email).
+
+- @react-email/components : collection of all components in react-email
+
+- date-fns : simple and consistent toolset for manipulating JavaScript dates in a browser & Node.js
