@@ -74,3 +74,5 @@ bun dev
 - @react-email/components : collection of all components in react-email
 
 - date-fns : simple and consistent toolset for manipulating JavaScript dates in a browser & Node.js
+
+- copyfiles : for copying files easily.

@@ -8,6 +8,8 @@ import { appRouter } from "./trpc";
 import bodyParser from "body-parser";
 import { IncomingMessage } from "http";
 import { stripeWebhookHandler } from "./webhooks";
+import nextBuild from "next/dist/build";
+import path from "path";
 
 const app = e();
 const PORT = Number(process.env.PORT) || 3000; //Change Port number according to host provided port number, when hosting on server.
@@ -46,6 +48,17 @@ const start = async () => {
       },
     },
   });
+
+  //build script for production
+  if (process.env.NEXT_BUILD) {
+    app.listen(PORT, async () => {
+      payload.logger.info("Next.js is building for production");
+      //@ts-expect-error
+      await nextBuild(path.join(__dirname, "../"));
+      process.exit();
+    });
+    return;
+  }
 
   //forward the req to tRPC next js to handle it.
   app.use(
