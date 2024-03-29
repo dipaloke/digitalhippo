@@ -1,14 +1,82 @@
-import { Product } from "../../payload-types";
+import { Product, User } from "../../payload-types";
 import { PRODUCT_CATAGORIES } from "../../config";
 import { slateEditor } from "@payloadcms/richtext-slate";
-import { CollectionConfig } from "payload/types";
-import { BeforeChangeHook } from "payload/dist/collections/config/types";
+import { Access, CollectionConfig } from "payload/types";
+import {
+  AfterChangeHook,
+  BeforeChangeHook,
+} from "payload/dist/collections/config/types";
 import { stripe } from "../../lib/stripe";
 
+//before product is created
 const addUser: BeforeChangeHook<Product> = async ({ req, data }) => {
   const user = req.user;
   return { ...data, user: user.id };
 };
+
+//after product is created.
+//functionality to connect users against their created product.(to keep data integrity)
+const syncUser: AfterChangeHook<Product> = async ({ req, doc }) => {
+  //getting the full user obj
+  const fullUser = await req.payload.findByID({
+    collection: "users",
+    id: req.user.id,
+  });
+
+  if (fullUser && typeof fullUser === "object") {
+    //all the products user created
+    const { products } = fullUser;
+
+    const allIds = [
+      ...(products?.map((product) =>
+        typeof product === "object" ? product.id : product
+      ) || []),
+    ];
+
+    //filter the ids
+    const createdProductIds = allIds.filter(
+      (id, index) => allIds.indexOf(id) === index
+    );
+
+    const dataToUpdate = [...createdProductIds, doc.id];
+
+    //sync with DB
+    await req.payload.update({
+      collection: "users",
+      id: fullUser.id,
+      data: {
+        products: dataToUpdate,
+      },
+    });
+  }
+};
+
+//you can read only your product
+const isAdminorHasAccess =
+  (): Access =>
+  ({ req: { user: _user } }) => {
+    const user = _user as User | undefined;
+    if (!user) return false;
+    if (user.role === "admin") return true;
+
+    const userProductIds = (user.products || []).reduce<Array<string>>(
+      (acc, product) => {
+        if (!product) return acc;
+        if (typeof product === "string") {
+          acc.push(product);
+        } else {
+          acc.push(product.id);
+        }
+        return acc;
+      },
+      []
+    );
+    return {
+      id: {
+        in: userProductIds,
+      },
+    };
+  };
 
 export const Products: CollectionConfig = {
   slug: "products",
@@ -17,8 +85,14 @@ export const Products: CollectionConfig = {
     useAsTitle: "name",
   },
   //access rules will determine who can access which part of the product.
-  access: {},
+  access: {
+    read: isAdminorHasAccess(),
+    update: isAdminorHasAccess(),
+    delete: isAdminorHasAccess(),
+  },
   hooks: {
+    //sync user with their created products
+    afterChange: [syncUser],
     beforeChange: [
       //this code will run before a product is saved to our database
       addUser,

@@ -35,6 +35,7 @@ bun dev
 - After payment people gets redirected to thankyou page, from where they can download the product.
 - website will keep polling for stripe webhook until payment was made successfully. Otherwise we don't release the asset to download.
 - Receipt Email template taken from ([react email](https://demo.react.email/)).
+- User can't access sign-in or sign-up page if user is logged in.
 
 ## Packages :
 

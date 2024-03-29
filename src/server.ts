@@ -10,6 +10,8 @@ import { IncomingMessage } from "http";
 import { stripeWebhookHandler } from "./webhooks";
 import nextBuild from "next/dist/build";
 import path from "path";
+import { PayloadRequest } from "payload/types";
+import { parse } from "url";
 
 const app = e();
 const PORT = Number(process.env.PORT) || 3000; //Change Port number according to host provided port number, when hosting on server.
@@ -48,6 +50,22 @@ const start = async () => {
       },
     },
   });
+
+  //security for cart page
+
+  const cartRouter = e.Router();
+  cartRouter.use(payload.authenticate); //attaches user obj to express req
+  //whenever we are accessing the main page, we also get arrow function with req and res
+  cartRouter.get("/", (req, res) => {
+    const request = req as PayloadRequest;
+
+    if (!request.user) return res.redirect("/sign-in?origin=cart");
+
+    const parseUrl = parse(req.url, true);
+
+    return nextApp.render(req, res, "/cart", parseUrl.query);
+  });
+  app.use("/cart", cartRouter);
 
   //build script for production
   if (process.env.NEXT_BUILD) {
