@@ -22,3 +22,4 @@ export const getServerSideUser = async (
 
   return { user };
 };
+
