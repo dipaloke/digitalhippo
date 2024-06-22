@@ -13,3 +13,4 @@ export async function middleware(req: NextRequest) {
   //if not logged in let the user do the next thing.
   return NextResponse.next();
 }
+
