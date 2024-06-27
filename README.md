@@ -70,6 +70,7 @@ bun dev
 
 - Body-parser : Parse incoming request bodies in a middleware before your handlers, available under the req.body property(works with express).
 
+
 - Resend: Node.js library for the Resend API(for sending email).
 
 - @react-email/components : collection of all components in react-email
