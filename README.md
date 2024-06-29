@@ -42,7 +42,7 @@ bun dev
 
 - ShadCn : UI : Sign-up page(input, label, dropdown-menu, skelton, scrollArea)
 
-- LucideReact : Icons
+- LucideReact : Icons 
 
 - Express & type/express : For selfHosting our app without Vercel.
 
